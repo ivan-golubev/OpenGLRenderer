@@ -97,6 +97,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\assimp\Debug;$(SolutionDir)Lib\glfw\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimpd.lib;zlibstaticd.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -117,6 +121,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\assimp\Release;$(SolutionDir)Lib\glfw\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp.lib;zlibstatic.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -133,6 +141,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\assimp\Debug;$(SolutionDir)Lib\glfw\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimpd.lib;zlibstaticd.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -153,10 +165,14 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\assimp\Release;$(SolutionDir)Lib\glfw\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp.lib;zlibstatic.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Lib\glad\src\glad.c" />
-    <ClCompile Include="Src/OpenGLRenderer.cpp" />
+    <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\ModelLoader.cpp" />
     <ClCompile Include="Src\Renderer.cpp" />
   </ItemGroup>

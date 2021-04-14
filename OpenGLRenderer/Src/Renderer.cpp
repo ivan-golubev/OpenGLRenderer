@@ -40,14 +40,19 @@ namespace awesome
         glViewport(0, 0, width, height);
     }
 
-    void Renderer::Init()
+    Renderer::Renderer()
     {
         CreateRenderingContext();
         LocateOpenGlFunctions();
         glfwSetFramebufferSizeCallback(RenderingContext, FramebufferSizeCallback);
     }
 
-    void Renderer::StartUpdateLoop() 
+    Renderer::~Renderer()
+    {
+        glfwTerminate();
+    }
+
+    void Renderer::ExecuteUpdateLoop() 
     {
         while (!glfwWindowShouldClose(RenderingContext))
         {

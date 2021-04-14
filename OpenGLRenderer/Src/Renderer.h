@@ -7,8 +7,10 @@ namespace awesome
 	class Renderer
 	{
 	public:
-        void Init();
-        void StartUpdateLoop();
+        Renderer();
+        ~Renderer();
+
+        void ExecuteUpdateLoop();
     private:
         void CreateRenderingContext();
         void LocateOpenGlFunctions();
