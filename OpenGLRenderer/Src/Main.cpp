@@ -4,16 +4,29 @@
 #include <filesystem>
 
 #include "ModelLoader.h"
+#include "ShaderProgram.h"
 #include "Renderer.h"
 
-int main(int argc, char* argv[])
-{
+int main()
+{   
     using namespace awesome;
-    std::string modelFile{ std::filesystem::absolute("Models/triangle.obj").generic_string() };
-    std::vector<Mesh> model = LoadModel(modelFile);
-    
     Renderer renderer{};
-    renderer.ExecuteUpdateLoop();
+    {
+        std::string modelFile{ std::filesystem::absolute("Models/triangle.obj").generic_string() };
+        std::vector<Mesh> model = LoadModel(modelFile);
+
+        std::string vertexShaderFile{ std::filesystem::absolute("Shaders/vertex_shader.glsl").generic_string() };
+        std::string fragmentShaderFile{ std::filesystem::absolute("Shaders/fragment_shader.glsl").generic_string() };
+
+        ShaderProgram shaderProgram{ vertexShaderFile, fragmentShaderFile };
+        if (shaderProgram.LinkingComplete())
+            renderer.SubmitModel(model[0], shaderProgram.shaderProgramId);
+        else {
+            std::cout << "Failed to initialize the shaders" << std::endl;
+            exit(-1);
+        }
+    }
+    renderer.ExecuteRenderLoop();
 
     return 0;
 }

@@ -1,11 +1,12 @@
 #include "Renderer.h"
 
 #include <vector>
-#include <string>
 #include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "ModelLoader.h"
 
 namespace awesome
 {
@@ -52,12 +53,35 @@ namespace awesome
         glfwTerminate();
     }
 
-    void Renderer::ExecuteUpdateLoop() 
+    void Renderer::SubmitModel(Mesh& mesh, GLuint shaderProgramId)
+    {
+        this->shaderProgramId = shaderProgramId;
+        unsigned int VertexBuffer;
+        glGenBuffers(1, &VertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
+        auto vertices = mesh.vertices.data();
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    }
+
+    void Renderer::ExecuteRenderLoop() 
     {
         while (!glfwWindowShouldClose(RenderingContext))
         {
+            ProcessInput();
+
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            glUseProgram(shaderProgramId);
+
             glfwSwapBuffers(RenderingContext);
             glfwPollEvents();
         }
+    }
+
+    void Renderer::ProcessInput()
+    {
+        if (glfwGetKey(RenderingContext, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(RenderingContext, true);
     }
 }

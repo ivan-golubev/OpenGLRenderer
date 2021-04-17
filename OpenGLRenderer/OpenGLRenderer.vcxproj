@@ -175,10 +175,18 @@
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\ModelLoader.cpp" />
     <ClCompile Include="Src\Renderer.cpp" />
+    <ClCompile Include="Src\ShaderLoader.cpp" />
+    <ClCompile Include="Src\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\ModelLoader.h" />
     <ClInclude Include="Src\Renderer.h" />
+    <ClInclude Include="Src\ShaderLoader.h" />
+    <ClInclude Include="Src\ShaderProgram.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\fragment_shader.glsl" />
+    <None Include="..\Shaders\vertex_shader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
