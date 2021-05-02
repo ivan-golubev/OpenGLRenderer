@@ -29,9 +29,15 @@ namespace awesome
 		~Mesh();
 
 		Vertex* Vertices{nullptr};
-		inline unsigned int SizeInBytes() const { return size * sizeof(Vertex); }
+		unsigned int* Indices{ nullptr };
+
+		inline unsigned int GetNumIndices() const { return NumIndices; }
+
+		inline unsigned int VerticesSize() const { return NumVertices * sizeof(Vertex); }
+		inline unsigned int IndicesSize() const { return NumIndices * sizeof(unsigned int); }
 	private:
-		unsigned int size{0};
+		unsigned int NumVertices{0};
+		unsigned int NumIndices{0};
 	};
 
 	struct Model

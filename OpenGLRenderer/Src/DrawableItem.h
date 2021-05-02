@@ -20,7 +20,9 @@ namespace awesome
     private:
         GLuint ShaderProgramId;
         GLuint VertexBufferObject;
+        GLuint ElementArrayBufferObject; /* indices */
         GLuint VertexArrayObject;
         GLenum DrawMode;
+        GLuint NumIndices;
     };
 }

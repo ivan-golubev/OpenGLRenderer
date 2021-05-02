@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <cassert>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -55,8 +56,8 @@ namespace awesome
 
 	Mesh::Mesh(aiMesh* assimpMesh)
 	{
-		size = assimpMesh->mNumVertices;
-		Vertices = new Vertex[size];
+		NumVertices = assimpMesh->mNumVertices;
+		Vertices = new Vertex[NumVertices];
 		for (unsigned int i = 0; i < assimpMesh->mNumVertices; ++i)
 		{
 			auto assimpVertex = assimpMesh->mVertices[i];
@@ -64,11 +65,26 @@ namespace awesome
 			Vertices[i].y = static_cast<float>(assimpVertex.y);
 			Vertices[i].z = static_cast<float>(assimpVertex.z);
 		}
+		assert(assimpMesh->HasFaces());		
+		unsigned int polygonSize = assimpMesh->mFaces[0].mNumIndices;
+		/* IMPORTANT: assume that all faces are of the same size (generally should be triangles) */
+		NumIndices = assimpMesh->mNumFaces * polygonSize;
+
+		Indices = new unsigned int[NumIndices];
+		for (unsigned int i = 0; i < assimpMesh->mNumFaces; ++i)
+		{
+			auto face = assimpMesh->mFaces[i];
+			for (unsigned int j = 0; j < face.mNumIndices; ++j)
+			{
+				unsigned int ix = polygonSize * i + j;
+				Indices[ix] = face.mIndices[j];
+			}
+		}
 	}
 
 	Mesh::Mesh(Mesh&& other) noexcept
 	{
-		size = other.size;
+		NumVertices = other.NumVertices;
 		Vertices = other.Vertices;
 		other.Vertices = nullptr;
 	}
@@ -77,5 +93,7 @@ namespace awesome
 	{
 		if (Vertices)
 			delete[](Vertices);
+		if (Indices)
+			delete[](Indices);
 	}
 }
