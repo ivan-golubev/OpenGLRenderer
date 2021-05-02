@@ -21,6 +21,26 @@ namespace awesome
 		glDeleteShader(fragmentShaderId);
 	}
 
+	ShaderProgram::ShaderProgram(ShaderProgram&& other) noexcept
+	{
+		linkingComplete = other.linkingComplete;
+		shaderProgramId = other.shaderProgramId;
+		other.shaderProgramId = 0;
+	}
+
+	ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) noexcept
+	{
+		linkingComplete = other.linkingComplete;
+		shaderProgramId = other.shaderProgramId;
+		other.shaderProgramId = 0;
+		return *this;
+	}
+
+	ShaderProgram::~ShaderProgram()
+	{
+		glDeleteProgram(shaderProgramId);
+	}
+
 	void ShaderProgram::CheckLinkErrors()
 	{
 		int linkStatus{ -1 };

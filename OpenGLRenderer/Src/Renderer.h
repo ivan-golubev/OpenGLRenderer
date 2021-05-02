@@ -1,12 +1,15 @@
 #pragma once
 
+#include <vector>
+#include "DrawableItem.h"
+
 struct GLFWwindow;
 
 using GLuint = unsigned int;
 
 namespace awesome
 {
-    struct Mesh;
+    struct Model;
 
 	class Renderer
 	{
@@ -14,14 +17,17 @@ namespace awesome
         Renderer();
         ~Renderer();
 
-        void SubmitModel(Mesh& mesh, GLuint shaderProgramId);
+        void SubmitModel(Model& model);
         void ExecuteRenderLoop();
     private:
         void ProcessInput();
         void CreateRenderingContext();
         void LocateOpenGlFunctions();
 
-        GLuint shaderProgramId;
         GLFWwindow* RenderingContext;
+        std::vector<DrawableItem> drawables{};
+
+        int WindowWidth{ 800 };
+        int WindowHeigh{ 600 };
 	};
 }

@@ -1,6 +1,5 @@
 #include "Renderer.h"
 
-#include <vector>
 #include <iostream>
 
 #include <glad/glad.h>
@@ -13,11 +12,11 @@ namespace awesome
     void Renderer::CreateRenderingContext()
     {
         glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        RenderingContext = glfwCreateWindow(800, 600, "AwesomeRender", nullptr, nullptr);
+        RenderingContext = glfwCreateWindow(WindowWidth, WindowHeigh, "AwesomeRender", nullptr, nullptr);
         if (!RenderingContext)
         {
             std::cout << "Failed to create GLFW window" << std::endl;
@@ -53,14 +52,12 @@ namespace awesome
         glfwTerminate();
     }
 
-    void Renderer::SubmitModel(Mesh& mesh, GLuint shaderProgramId)
+    void Renderer::SubmitModel(Model& model)
     {
-        this->shaderProgramId = shaderProgramId;
-        unsigned int VertexBuffer;
-        glGenBuffers(1, &VertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
-        auto vertices = mesh.vertices.data();
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        for(auto& mesh: model.meshes)
+            drawables.emplace_back(mesh, model.shaderProgram.shaderProgramId);
+        /* mesh data has been passed to the GPU and is no longer needed */
+        model.ClearMeshes();
     }
 
     void Renderer::ExecuteRenderLoop() 
@@ -69,10 +66,11 @@ namespace awesome
         {
             ProcessInput();
 
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            glUseProgram(shaderProgramId);
+            for (auto& d : drawables)
+                d.Draw();
 
             glfwSwapBuffers(RenderingContext);
             glfwPollEvents();

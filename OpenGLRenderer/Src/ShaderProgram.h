@@ -8,9 +8,16 @@ namespace awesome
 	class ShaderProgram
 	{
 	public:
+		ShaderProgram() = default;
 		ShaderProgram(std::string& vertexShaderPath, std::string fragmentShaderPath);
-		GLuint shaderProgramId;
-		bool inline LinkingComplete() const { return linkingComplete; }
+
+		ShaderProgram(ShaderProgram&& other) noexcept;
+		ShaderProgram& operator=(ShaderProgram&& other) noexcept;
+
+		~ShaderProgram();
+		
+		GLuint shaderProgramId{0};
+		bool inline LinkedSuccessfully() const { return linkingComplete; }
 
 	private:
 		void CheckLinkErrors();
