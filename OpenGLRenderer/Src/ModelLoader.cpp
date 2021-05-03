@@ -24,6 +24,7 @@ namespace awesome
 	{
 		shaderProgram = std::move(other.shaderProgram);
 		meshes = std::move(other.meshes);
+		memset(&other, 0, sizeof(Model));
 	}
 
 	void Model::LoadShaders(std::string& vertexShaderRelativePath, std::string& fragmentShaderRelativePath)
@@ -85,8 +86,11 @@ namespace awesome
 	Mesh::Mesh(Mesh&& other) noexcept
 	{
 		NumVertices = other.NumVertices;
+		NumIndices = other.NumIndices;
 		Vertices = other.Vertices;
-		other.Vertices = nullptr;
+		Indices = other.Indices;
+		
+		memset(&other, 0, sizeof(Mesh));
 	}
 
 	Mesh::~Mesh()

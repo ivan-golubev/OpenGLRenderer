@@ -38,7 +38,8 @@ namespace awesome
 
 	ShaderProgram::~ShaderProgram()
 	{
-		glDeleteProgram(shaderProgramId);
+		if (shaderProgramId)
+			glDeleteProgram(shaderProgramId);
 	}
 
 	void ShaderProgram::CheckLinkErrors()

@@ -32,6 +32,7 @@ namespace awesome
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementArrayBufferObject);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndicesSize(), mesh.Indices, GL_STATIC_DRAW);
 
+        /* unbind the VAO first, then the buffers */
         glBindVertexArray(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -46,11 +47,7 @@ namespace awesome
         DrawMode = other.DrawMode;
         NumIndices = other.NumIndices;
 
-        other.ShaderProgramId = 0;
-        other.VertexBufferObject = 0;
-        other.VertexArrayObject = 0;
-        other.ElementArrayBufferObject = 0;
-        other.NumIndices = 0;
+        memset(&other, 0, sizeof(DrawableItem));
     }
 
 	DrawableItem::~DrawableItem()
