@@ -17,16 +17,22 @@ namespace awesome
 	{
         glGenVertexArrays(1, &VertexArrayObject);
         glGenBuffers(1, &VertexBufferObject);
+        glGenBuffers(1, &VertexColorBufferObject);
         glGenBuffers(1, &ElementArrayBufferObject);
 
         glBindVertexArray(VertexArrayObject);
 
-        /* pass the vertex data */
+        /* pass the vertex positions */
         glBindBuffer(GL_ARRAY_BUFFER, VertexBufferObject);                
         glBufferData(GL_ARRAY_BUFFER, mesh.VerticesSize(), mesh.Vertices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, Vertex::TOTAL_VERTEX_ATTRIBS, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glVertexAttribPointer(0, Vertex::POSITION_COMPONENTS, GL_FLOAT, GL_FALSE, 0, (void*)0);
         glEnableVertexAttribArray(0);
+
+        /* pass the vertex colors */
+        glBindBuffer(GL_ARRAY_BUFFER, VertexColorBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, mesh.ColorsSize(), mesh.Colors, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, Color::COLOR_COMPONENTS, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glEnableVertexAttribArray(1);
 
         /* pass the indeces */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementArrayBufferObject);

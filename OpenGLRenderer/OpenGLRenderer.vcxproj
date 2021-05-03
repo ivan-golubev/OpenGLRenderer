@@ -188,8 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\fragment_shader_blue.glsl" />
+    <None Include="..\Shaders\fragment_shader_color.glsl" />
     <None Include="..\Shaders\fragment_shader_red.glsl" />
     <None Include="..\Shaders\vertex_shader.glsl" />
+    <None Include="..\Shaders\vertex_shader_color.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

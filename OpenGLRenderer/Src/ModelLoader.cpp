@@ -57,6 +57,14 @@ namespace awesome
 
 	Mesh::Mesh(aiMesh* assimpMesh)
 	{
+		ReadVertices(assimpMesh);
+		ReadIndices(assimpMesh);
+		/* read the first set of colors for each vertex */
+		ReadColors(assimpMesh);
+	}
+
+	void Mesh::ReadVertices(aiMesh* assimpMesh)
+	{
 		NumVertices = assimpMesh->mNumVertices;
 		Vertices = new Vertex[NumVertices];
 		for (unsigned int i = 0; i < assimpMesh->mNumVertices; ++i)
@@ -66,7 +74,11 @@ namespace awesome
 			Vertices[i].y = static_cast<float>(assimpVertex.y);
 			Vertices[i].z = static_cast<float>(assimpVertex.z);
 		}
-		assert(assimpMesh->HasFaces());		
+	}
+
+	void Mesh::ReadIndices(aiMesh* assimpMesh)
+	{
+		assert(assimpMesh->HasFaces());
 		unsigned int polygonSize = assimpMesh->mFaces[0].mNumIndices;
 		/* IMPORTANT: assume that all faces are of the same size (generally should be triangles) */
 		NumIndices = assimpMesh->mNumFaces * polygonSize;
@@ -83,12 +95,26 @@ namespace awesome
 		}
 	}
 
+	void Mesh::ReadColors(aiMesh* assimpMesh, unsigned int setNumber)
+	{
+		if (!assimpMesh->HasVertexColors(setNumber))
+			return;
+		NumColors = assimpMesh->mNumVertices;
+		Colors = new Color[NumColors];
+		for (unsigned int i = 0; i < NumColors; ++i)
+		{
+			auto assimpColor = assimpMesh->mColors[setNumber][i];
+			Colors[i] = Color(assimpColor.r, assimpColor.g, assimpColor.b, assimpColor.a);
+		}
+	}
+
 	Mesh::Mesh(Mesh&& other) noexcept
 	{
 		NumVertices = other.NumVertices;
 		NumIndices = other.NumIndices;
 		Vertices = other.Vertices;
 		Indices = other.Indices;
+		Colors = other.Colors;
 		
 		memset(&other, 0, sizeof(Mesh));
 	}
@@ -99,5 +125,7 @@ namespace awesome
 			delete[](Vertices);
 		if (Indices)
 			delete[](Indices);
+		if (Colors)
+			delete[](Colors);
 	}
 }
