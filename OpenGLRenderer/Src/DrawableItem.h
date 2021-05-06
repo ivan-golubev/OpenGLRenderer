@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 using GLuint = unsigned int;
 using GLenum = unsigned int;
 
@@ -15,10 +17,12 @@ namespace awesome
 
         DrawableItem(DrawableItem&& other) noexcept;
 
-        void Draw();
+        void Draw(glm::mat4& transform);
 
     private:
         GLuint ShaderProgramId;
+        GLuint TransformLocation;
+
         GLuint VertexBufferObject;
         GLuint VertexColorBufferObject;
         GLuint ElementArrayBufferObject; /* indices */

@@ -4,8 +4,10 @@ layout (location = 1) in vec4 VertColor;
 
 out vec4 Color;
 
+uniform mat4 Transform;
+
 void main()
 {
-    gl_Position = vec4(Position.x, Position.y, Position.z, 1.0);
+    gl_Position = Transform * vec4(Position, 1.0f);
     Color = VertColor;
 }

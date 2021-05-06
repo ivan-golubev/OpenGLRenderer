@@ -4,6 +4,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "ModelLoader.h"
 
@@ -62,6 +64,10 @@ namespace awesome
 
     void Renderer::ExecuteRenderLoop() 
     {
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+        transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
+
         while (!glfwWindowShouldClose(RenderingContext))
         {
             ProcessInput();
@@ -70,7 +76,7 @@ namespace awesome
             glClear(GL_COLOR_BUFFER_BIT);
 
             for (auto& d : drawables)
-                d.Draw();
+                d.Draw(transform);
 
             glfwSwapBuffers(RenderingContext);
             glfwPollEvents();

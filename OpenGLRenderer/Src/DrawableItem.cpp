@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "ModelLoader.h"
 
@@ -15,6 +16,9 @@ namespace awesome
         DrawMode(GL_TRIANGLES),
         NumIndices(mesh.GetNumIndices())
 	{
+        /* get shader variable locations */
+        TransformLocation = glGetUniformLocation(ShaderProgramId, "Transform");
+
         glGenVertexArrays(1, &VertexArrayObject);
         glGenBuffers(1, &VertexBufferObject);
         glGenBuffers(1, &VertexColorBufferObject);
@@ -47,9 +51,11 @@ namespace awesome
     DrawableItem::DrawableItem(DrawableItem&& other) noexcept
     {
         ShaderProgramId = other.ShaderProgramId;
+        TransformLocation = other.TransformLocation;
         VertexBufferObject = other.VertexBufferObject;
         ElementArrayBufferObject = other.ElementArrayBufferObject;
         VertexArrayObject = other.VertexArrayObject;
+        VertexColorBufferObject = other.VertexColorBufferObject;
         DrawMode = other.DrawMode;
         NumIndices = other.NumIndices;
 
@@ -64,12 +70,14 @@ namespace awesome
             glDeleteBuffers(1, &VertexBufferObject);
     }
 
-    void DrawableItem::Draw()
+    void DrawableItem::Draw(glm::mat4& transform)
     {
         /* set the wireframe mode */
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
         glUseProgram(ShaderProgramId);
+        glUniformMatrix4fv(TransformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+
         glBindVertexArray(VertexArrayObject);
         glDrawElements(DrawMode, NumIndices, GL_UNSIGNED_INT, 0);
 
