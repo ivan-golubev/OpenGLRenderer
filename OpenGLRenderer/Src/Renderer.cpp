@@ -62,16 +62,15 @@ namespace awesome
 
     void Renderer::ExecuteRenderLoop() 
     {
-        glm::mat4 transform = glm::mat4(1.0f);
-        //transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-        //transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
-
+        auto const identityMatrix = glm::mat4(1.0f);
         while (!glfwWindowShouldClose(RenderingContext))
         {
             ProcessInput();
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            glm::mat4 transform = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
             for (auto& d : drawables)
                 d.Draw(transform);
