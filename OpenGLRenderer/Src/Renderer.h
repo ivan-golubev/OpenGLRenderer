@@ -17,7 +17,7 @@ namespace awesome
         Renderer();
         ~Renderer();
 
-        void SubmitModel(Model& model);
+        void SubmitModel(Model&& model);
         void ExecuteRenderLoop();
     private:
         void ProcessInput();

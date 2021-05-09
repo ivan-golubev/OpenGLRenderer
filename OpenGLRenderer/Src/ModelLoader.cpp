@@ -8,6 +8,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
+/* Forward declare a texture loading function from stbi, which is part of Assimp */
+extern "C" {
+	extern unsigned char* stbi_load(char const* filename, int* x, int* y, int* comp, int req_comp);
+	extern void stbi_image_free(void* retval_from_stbi_load);
+}
+
 namespace awesome
 {
 	Model::Model(std::string&& modelRelativePath, std::string&& vertexShaderRelativePath, std::string&& fragmentShaderRelativePath)
@@ -32,9 +38,9 @@ namespace awesome
 		std::string vertexShaderAbsPath{ std::filesystem::absolute(vertexShaderRelativePath).generic_string() };
 		std::string fragmentShaderAbsPath{ std::filesystem::absolute(fragmentShaderRelativePath).generic_string() };
 
-		shaderProgram = ShaderProgram(vertexShaderAbsPath, fragmentShaderAbsPath);
+		shaderProgram = std::make_shared<ShaderProgram>(vertexShaderAbsPath, fragmentShaderAbsPath);
 
-		if (!shaderProgram.LinkedSuccessfully())
+		if (!shaderProgram->LinkedSuccessfully())
 		{
 			std::cout << "Failed to initialize the shaders" << std::endl;
 			exit(-1);
@@ -45,25 +51,26 @@ namespace awesome
 	{
 		std::string modelFileAbsPath{ std::filesystem::absolute(modelRelativePath).generic_string() };
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(modelFileAbsPath, 0);
+		aiScene const * scene = importer.ReadFile(modelFileAbsPath, 0);
 		if (!scene) {
 			std::cout << "Failed to read the input model " << modelFileAbsPath << std::endl;
 			std::cout << importer.GetErrorString() << modelFileAbsPath << std::endl;
 			exit(-1);
 		}
-		for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
-			meshes.emplace_back(scene->mMeshes[i]);
+		for (unsigned int i = 0; i < scene->mNumMeshes; ++i) 
+			meshes.emplace_back(scene->mMeshes[i], scene);
 	}
 
-	Mesh::Mesh(aiMesh* assimpMesh)
+	Mesh::Mesh(aiMesh const * assimpMesh, aiScene const * scene)
 	{
 		ReadVertices(assimpMesh);
 		ReadIndices(assimpMesh);
-		/* read the first set of colors for each vertex */
+		/* read the first set of colors and textures for each vertex, the rest are ignored */
 		ReadColors(assimpMesh);
+		ReadTextureCoords(assimpMesh, scene);
 	}
 
-	void Mesh::ReadVertices(aiMesh* assimpMesh)
+	void Mesh::ReadVertices(aiMesh const * assimpMesh)
 	{
 		NumVertices = assimpMesh->mNumVertices;
 		Vertices = new Vertex[NumVertices];
@@ -76,7 +83,7 @@ namespace awesome
 		}
 	}
 
-	void Mesh::ReadIndices(aiMesh* assimpMesh)
+	void Mesh::ReadIndices(aiMesh const * assimpMesh)
 	{
 		assert(assimpMesh->HasFaces());
 		unsigned int polygonSize = assimpMesh->mFaces[0].mNumIndices;
@@ -95,16 +102,46 @@ namespace awesome
 		}
 	}
 
-	void Mesh::ReadColors(aiMesh* assimpMesh, unsigned int setNumber)
+	void Mesh::ReadColors(aiMesh const * assimpMesh, unsigned int setNumber)
 	{
 		if (!assimpMesh->HasVertexColors(setNumber))
 			return;
-		NumColors = assimpMesh->mNumVertices;
+		unsigned int NumColors = assimpMesh->mNumVertices;
 		Colors = new Color[NumColors];
 		for (unsigned int i = 0; i < NumColors; ++i)
 		{
 			auto assimpColor = assimpMesh->mColors[setNumber][i];
 			Colors[i] = Color(assimpColor.r, assimpColor.g, assimpColor.b, assimpColor.a);
+		}
+	}	
+
+	void Mesh::ReadTextureCoords(aiMesh const * assimpMesh, aiScene const* scene, unsigned int setNumber)
+	{
+		if (!assimpMesh->HasTextureCoords(setNumber))
+			return;
+		unsigned NumTextureCoords = assimpMesh->mNumVertices;
+		TextureCoords = new TextureCoord[NumTextureCoords];
+		for (unsigned int i = 0; i < NumTextureCoords; ++i)
+		{
+			auto assimpTextureCoord = assimpMesh->mTextureCoords[setNumber][i];
+			TextureCoords[i] = TextureCoord(assimpTextureCoord.x, assimpTextureCoord.y);
+		}
+
+		/* grab the texture name, then load the texture */
+		if (scene->HasMaterials() && assimpMesh->mMaterialIndex >= 0)
+		{
+			auto const material = scene->mMaterials[assimpMesh->mMaterialIndex];
+			aiString aiTexturePath;
+			if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0
+				&& material->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexturePath) == AI_SUCCESS)
+			{
+				std::string const moduleRelativePath{ "Models/" };
+				std::string const textureRelativePath{aiTexturePath.C_Str()};
+				/* the texture path is relative to the model location */
+				std::string const textureAbsPath{ std::filesystem::absolute(moduleRelativePath + textureRelativePath).generic_string() };
+				int nrChannels;
+				Texture = stbi_load(textureAbsPath.c_str(), &TextureWidth, &TextureHeight, &nrChannels, 0);
+			}
 		}
 	}
 
@@ -112,10 +149,13 @@ namespace awesome
 	{
 		NumVertices = other.NumVertices;
 		NumIndices = other.NumIndices;
+
 		Vertices = other.Vertices;
 		Indices = other.Indices;
 		Colors = other.Colors;
-		
+		TextureCoords = other.TextureCoords;
+		Texture = other.Texture;
+
 		memset(&other, 0, sizeof(Mesh));
 	}
 
@@ -127,5 +167,9 @@ namespace awesome
 			delete[](Indices);
 		if (Colors)
 			delete[](Colors);
+		if (TextureCoords)
+			delete[](TextureCoords);
+		if (Texture)
+			stbi_image_free(Texture);
 	}
 }

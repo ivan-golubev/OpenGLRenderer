@@ -54,19 +54,17 @@ namespace awesome
         glfwTerminate();
     }
 
-    void Renderer::SubmitModel(Model& model)
+    void Renderer::SubmitModel(Model&& model)
     {
         for(auto& mesh: model.meshes)
-            drawables.emplace_back(mesh, model.shaderProgram.shaderProgramId);
-        /* mesh data has been passed to the GPU and is no longer needed */
-        model.ClearMeshes();
+            drawables.emplace_back(mesh, model.shaderProgram);
     }
 
     void Renderer::ExecuteRenderLoop() 
     {
         glm::mat4 transform = glm::mat4(1.0f);
-        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-        transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
+        //transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+        //transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
 
         while (!glfwWindowShouldClose(RenderingContext))
         {

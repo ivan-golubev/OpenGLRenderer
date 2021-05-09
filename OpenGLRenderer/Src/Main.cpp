@@ -6,11 +6,13 @@ int main()
     using namespace awesome;
     Renderer renderer{};
 
-    Model model1( "Models/rectangle.fbx", "Shaders/vertex_shader_color.glsl", "Shaders/fragment_shader_color.glsl" );
-    Model model2( "Models/triangle.fbx", "Shaders/vertex_shader_color.glsl", "Shaders/fragment_shader_color.glsl" );
+    {
+        Model model1("Models/rectangle_textured.fbx", "Shaders/vertex_shader_textured.glsl", "Shaders/fragment_shader_textured.glsl");
+        renderer.SubmitModel(std::move(model1));
 
-    renderer.SubmitModel(model1);
-    renderer.SubmitModel(model2);
+        Model model2("Models/triangle_textured.fbx", "Shaders/vertex_shader_textured.glsl", "Shaders/fragment_shader_textured.glsl");
+        renderer.SubmitModel(std::move(model2));
+    }
 
     renderer.ExecuteRenderLoop();
 

@@ -1,10 +1,12 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "ShaderProgram.h"
 
 struct aiMesh;
+struct aiScene;
 
 namespace awesome
 {
@@ -33,31 +35,46 @@ namespace awesome
 		static const unsigned int COLOR_COMPONENTS{4};
 	};
 
+	struct TextureCoord
+	{
+		TextureCoord() {}
+		TextureCoord(float _u, float _v) : u(_u), v(_v)
+		{}
+
+		float u{ 0.0f };
+		float v{ 0.0f };
+		static const unsigned int TEXTURE_COMPONENTS{ 2 };
+	};
+
 	struct Mesh
 	{
-		Mesh(aiMesh* assimpMesh);
+		Mesh(aiMesh const * assimpMesh, aiScene const* scene);
 		Mesh(Mesh&& other) noexcept;
 
 		~Mesh();
 
 		Vertex* Vertices{ nullptr };
-		Color* Colors{ nullptr };
 		unsigned int* Indices{ nullptr };
+		Color* Colors{ nullptr };
+		TextureCoord* TextureCoords{ nullptr };
+		unsigned char* Texture{ nullptr };
+		int TextureWidth{ 0 };
+		int TextureHeight{ 0 };
 
 		inline unsigned int GetNumIndices() const { return NumIndices; }
-		inline unsigned int GetNumColors() const { return NumColors; }
 
 		inline unsigned int VerticesSize() const { return NumVertices * sizeof(Vertex); }
 		inline unsigned int IndicesSize() const { return NumIndices * sizeof(unsigned int); }
-		inline unsigned int ColorsSize() const { return NumColors * sizeof(Color); }
+		inline unsigned int ColorsSize() const { return NumVertices * sizeof(Color); }
+		inline unsigned int TextureCoordsSize() const { return NumVertices * sizeof(TextureCoord); }
 	private:
-		void ReadVertices(aiMesh* assimpMesh);
-		void ReadIndices(aiMesh* assimpMesh);
-		void ReadColors(aiMesh* assimpMesh, unsigned int setNumber=0);
+		void ReadVertices(aiMesh const * assimpMesh);
+		void ReadIndices(aiMesh const * assimpMesh);
+		void ReadColors(aiMesh const * assimpMesh, unsigned int setNumber = 0);
+		void ReadTextureCoords(aiMesh const * assimpMesh, aiScene const* scene, unsigned int setNumber = 0);
 
 		unsigned int NumVertices{ 0 };
 		unsigned int NumIndices{ 0 };
-		unsigned int NumColors{ 0 };
 	};
 
 	struct Model
@@ -67,10 +84,8 @@ namespace awesome
 		Model(std::string& modelRelativePath, std::string& vertexShaderRelativePath, std::string& fragmentShaderRelativePath);
 		
 		Model(Model&& other) noexcept;
-		
-		void ClearMeshes() { meshes.clear(); }
 
-		ShaderProgram shaderProgram{};
+		std::shared_ptr<ShaderProgram> shaderProgram{};
 		std::vector<Mesh> meshes{};
 	private:
 		void LoadShaders(std::string& vertexShaderRelativePath, std::string& fragmentShaderRelativePath);
