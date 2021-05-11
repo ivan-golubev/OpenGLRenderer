@@ -19,12 +19,14 @@ namespace awesome
 
         DrawableItem(DrawableItem&& other) noexcept;
 
-        void Draw(glm::mat4& transform);
+        void Draw(glm::mat4& MVP_Matrix);
 
         bool WireframeMode{ false };
     private:
         std::shared_ptr<ShaderProgram> Shader;
-        GLuint TransformLocation;
+        GLuint MVP_Matrix_Location;
+        GLuint ViewMatrixLocation;
+        GLuint ProjectionMatrixLocation;
         GLuint TextureId;
 
         GLuint VertexBufferObject;

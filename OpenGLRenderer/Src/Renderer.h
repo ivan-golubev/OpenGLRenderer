@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <glm/glm.hpp>
 #include "DrawableItem.h"
 
 struct GLFWwindow;
@@ -26,6 +27,8 @@ namespace awesome
 
         GLFWwindow* RenderingContext;
         std::vector<DrawableItem> drawables{};
+
+        glm::vec3 CameraPosition{ 0.0f, 0.0f, -2.0f };
 
         int WindowWidth{ 800 };
         int WindowHeigh{ 600 };

@@ -18,7 +18,7 @@ namespace awesome
         NumIndices(mesh.GetNumIndices())
 	{
         /* get shader variable locations */
-        TransformLocation = glGetUniformLocation(Shader->shaderProgramId, "Transform");
+        MVP_Matrix_Location = glGetUniformLocation(Shader->shaderProgramId, "MVP");
 
         glGenVertexArrays(1, &VertexArrayObject);
         glGenBuffers(1, &VertexBufferObject);
@@ -71,7 +71,7 @@ namespace awesome
     {
         Shader = other.Shader;
         TextureId = other.TextureId;
-        TransformLocation = other.TransformLocation;
+        MVP_Matrix_Location = other.MVP_Matrix_Location;
         VertexBufferObject = other.VertexBufferObject;
         ElementArrayBufferObject = other.ElementArrayBufferObject;
         VertexArrayObject = other.VertexArrayObject;
@@ -97,12 +97,12 @@ namespace awesome
             glDeleteBuffers(1, &TextureCoordBuffer);
     }
 
-    void DrawableItem::Draw(glm::mat4& transform)
+    void DrawableItem::Draw(glm::mat4& MVP_Matrix)
     {        
         glPolygonMode(GL_FRONT_AND_BACK, WireframeMode ? GL_LINE : GL_FILL);
         
         glUseProgram(Shader->shaderProgramId);
-        glUniformMatrix4fv(TransformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+        glUniformMatrix4fv(MVP_Matrix_Location, 1, GL_FALSE, glm::value_ptr(MVP_Matrix));
 
         glBindTexture(GL_TEXTURE_2D, TextureId);
         glBindVertexArray(VertexArrayObject);

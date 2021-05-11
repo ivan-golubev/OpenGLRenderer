@@ -4,7 +4,6 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "ModelLoader.h"
@@ -47,6 +46,7 @@ namespace awesome
         CreateRenderingContext();
         LocateOpenGlFunctions();
         glfwSetFramebufferSizeCallback(RenderingContext, FramebufferSizeCallback);
+        glEnable(GL_DEPTH_TEST);
     }
 
     Renderer::~Renderer()
@@ -62,18 +62,20 @@ namespace awesome
 
     void Renderer::ExecuteRenderLoop() 
     {
-        auto const identityMatrix = glm::mat4(1.0f);
+        glm::mat4 const modelMatrix = glm::mat4(1.f);
+        glm::mat4 const projectionMatrix = glm::perspective(glm::radians(45.0f), (float) WindowWidth / WindowHeigh, 0.1f, 100.0f);
+
         while (!glfwWindowShouldClose(RenderingContext))
         {
             ProcessInput();
+            glm::mat4 viewMatrix = glm::translate(glm::mat4(1.0f), CameraPosition);
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            glm::mat4 transform = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
             for (auto& d : drawables)
-                d.Draw(transform);
+                d.Draw(mvpMatrix);
 
             glfwSwapBuffers(RenderingContext);
             glfwPollEvents();
@@ -84,5 +86,15 @@ namespace awesome
     {
         if (glfwGetKey(RenderingContext, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(RenderingContext, true);
+        
+        const float cameraMoveSpeed = 0.005f;
+        if (glfwGetKey(RenderingContext, GLFW_KEY_W) == GLFW_PRESS)
+            CameraPosition.z += cameraMoveSpeed;
+        if (glfwGetKey(RenderingContext, GLFW_KEY_S) == GLFW_PRESS)
+            CameraPosition.z -= cameraMoveSpeed;
+        if (glfwGetKey(RenderingContext, GLFW_KEY_D) == GLFW_PRESS)
+            CameraPosition.x += cameraMoveSpeed;
+        if (glfwGetKey(RenderingContext, GLFW_KEY_A) == GLFW_PRESS)
+            CameraPosition.x -= cameraMoveSpeed;
     }
 }
