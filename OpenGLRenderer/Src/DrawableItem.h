@@ -24,17 +24,17 @@ namespace awesome
         bool WireframeMode{ false };
     private:
         std::shared_ptr<ShaderProgram> Shader;
-        GLuint MVP_Matrix_Location;
-        GLuint ViewMatrixLocation;
-        GLuint ProjectionMatrixLocation;
-        GLuint TextureId;
+        GLuint MVP_Matrix_Location{0};
+        GLuint ViewMatrixLocation{ 0 };
+        GLuint ProjectionMatrixLocation{0};
+        GLuint TextureId{0};
 
-        GLuint VertexBufferObject;
-        GLuint VertexColorBufferObject;
-        GLuint ElementArrayBufferObject; /* indices */
-        GLuint TextureCoordBuffer; /* uv-coordinates */
-        GLuint VertexArrayObject;
+        GLuint VertexBufferObject{0};
+        GLuint VertexColorBufferObject{0};
+        GLuint ElementArrayBufferObject{0}; /* indices */
+        GLuint TextureCoordBuffer{0}; /* uv-coordinates */
+        GLuint VertexArrayObject{0};
         GLenum DrawMode;
-        GLuint NumIndices;        
+        GLuint NumIndices;   
     };
 }

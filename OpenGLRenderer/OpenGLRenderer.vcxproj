@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Lib\glad\src\glad.c" />
+    <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\DrawableItem.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\ModelLoader.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Src\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\DrawableItem.h" />
     <ClInclude Include="Src\ModelLoader.h" />
     <ClInclude Include="Src\Renderer.h" />

@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ModelLoader.h"
@@ -11,9 +13,6 @@ namespace awesome
 {
 	DrawableItem::DrawableItem(Mesh& mesh, std::shared_ptr<ShaderProgram> s):
         Shader{ s },
-        VertexBufferObject(0),
-        ElementArrayBufferObject(0),
-        VertexArrayObject(0),
         DrawMode(GL_TRIANGLES),
         NumIndices(mesh.GetNumIndices())
 	{
