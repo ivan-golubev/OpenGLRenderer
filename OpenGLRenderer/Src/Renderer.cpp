@@ -76,7 +76,7 @@ namespace awesome
     Renderer::Renderer()
     {
         CreateRenderingContext();
-        LocateOpenGlFunctions();        
+        LocateOpenGlFunctions();
 
         glEnable(GL_DEPTH_TEST);
         /* capture the cursor */

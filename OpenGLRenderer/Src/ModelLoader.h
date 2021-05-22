@@ -53,28 +53,25 @@ namespace awesome
 
 		~Mesh();
 
-		Vertex* Vertices{ nullptr };
-		unsigned int* Indices{ nullptr };
-		Color* Colors{ nullptr };
-		TextureCoord* TextureCoords{ nullptr };
+		std::vector<Vertex> Vertices{};
+		std::vector<unsigned int> Indices{};
+		std::vector<Color> Colors{};
+		std::vector<TextureCoord> TextureCoords{};
 		unsigned char* Texture{ nullptr };
 		int TextureWidth{ 0 };
 		int TextureHeight{ 0 };
 
-		inline unsigned int GetNumIndices() const { return NumIndices; }
-
-		inline unsigned int VerticesSize() const { return NumVertices * sizeof(Vertex); }
-		inline unsigned int IndicesSize() const { return NumIndices * sizeof(unsigned int); }
-		inline unsigned int ColorsSize() const { return NumVertices * sizeof(Color); }
-		inline unsigned int TextureCoordsSize() const { return NumVertices * sizeof(TextureCoord); }
+		inline unsigned int VerticesSizeBytes() const { return static_cast<unsigned int>(Vertices.size()) * sizeof(Vertex); }
+		inline unsigned int IndicesSizeBytes() const { return static_cast<unsigned int>(Indices.size()) * sizeof(unsigned int); }
+		inline unsigned int ColorsSizeBytes() const { return static_cast<unsigned int>(Vertices.size()) * sizeof(Color); }
+		inline unsigned int TextureCoordsSizeBytes() const { return static_cast<unsigned int>(Vertices.size()) * sizeof(TextureCoord); }
 	private:
 		void ReadVertices(aiMesh const * assimpMesh);
 		void ReadIndices(aiMesh const * assimpMesh);
 		void ReadColors(aiMesh const * assimpMesh, unsigned int setNumber = 0);
 		void ReadTextureCoords(aiMesh const * assimpMesh, aiScene const* scene, unsigned int setNumber = 0);
 
-		unsigned int NumVertices{ 0 };
-		unsigned int NumIndices{ 0 };
+		static const inline Color DefaultColor{ 1.0f, 1.0f, 1.0f, 1.0f };
 	};
 
 	struct Model

@@ -14,7 +14,7 @@ namespace awesome
 	DrawableItem::DrawableItem(Mesh& mesh, std::shared_ptr<ShaderProgram> s):
         Shader{ s },
         DrawMode(GL_TRIANGLES),
-        NumIndices(mesh.GetNumIndices())
+        NumIndices(static_cast<unsigned int>(mesh.Indices.size()))
 	{
         /* get shader variable locations */
         MVP_Matrix_Location = glGetUniformLocation(Shader->shaderProgramId, "MVP");
@@ -30,19 +30,19 @@ namespace awesome
 
         /* pass the vertex positions */
         glBindBuffer(GL_ARRAY_BUFFER, VertexBufferObject);                
-        glBufferData(GL_ARRAY_BUFFER, mesh.VerticesSize(), mesh.Vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh.VerticesSizeBytes(), mesh.Vertices.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, Vertex::POSITION_COMPONENTS, GL_FLOAT, GL_FALSE, 0, (void*)0);
         glEnableVertexAttribArray(0);
 
         /* pass the vertex colors */
         glBindBuffer(GL_ARRAY_BUFFER, VertexColorBufferObject);
-        glBufferData(GL_ARRAY_BUFFER, mesh.ColorsSize(), mesh.Colors, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh.ColorsSizeBytes(), mesh.Colors.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(1, Color::COLOR_COMPONENTS, GL_FLOAT, GL_FALSE, 0, (void*)0);
         glEnableVertexAttribArray(1);
 
         /* pass the indeces */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementArrayBufferObject);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndicesSize(), mesh.Indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndicesSizeBytes(), mesh.Indices.data(), GL_STATIC_DRAW);
 
         /* pass the texture */
         glBindTexture(GL_TEXTURE_2D, TextureId);
@@ -56,7 +56,7 @@ namespace awesome
 
         /* pass the uv-coordinates */
         glBindBuffer(GL_ARRAY_BUFFER, TextureCoordBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mesh.TextureCoordsSize(), mesh.TextureCoords, GL_STATIC_DRAW);        
+        glBufferData(GL_ARRAY_BUFFER, mesh.TextureCoordsSizeBytes(), mesh.TextureCoords.data(), GL_STATIC_DRAW);        
         glVertexAttribPointer(2, TextureCoord::TEXTURE_COMPONENTS, GL_FLOAT, GL_FALSE, 0, (void*) 0);
         glEnableVertexAttribArray(2);
 
@@ -105,7 +105,7 @@ namespace awesome
 
         glBindTexture(GL_TEXTURE_2D, TextureId);
         glBindVertexArray(VertexArrayObject);
-        glDrawElements(DrawMode, NumIndices, GL_UNSIGNED_INT, 0);
+        glDrawElements(DrawMode, NumIndices, GL_UNSIGNED_INT, (void*)0);
 
         glBindVertexArray(0);
     }

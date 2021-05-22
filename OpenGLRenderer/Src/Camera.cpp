@@ -27,21 +27,21 @@ namespace awesome {
         if (glfwGetKey(renderingContext, GLFW_KEY_S) == GLFW_PRESS)
             Position -= Forward * CameraMoveSpeed;
         if (glfwGetKey(renderingContext, GLFW_KEY_D) == GLFW_PRESS)
-            Forward += Right * CameraMoveSpeed;
+            Position -= Right * CameraMoveSpeed;
         if (glfwGetKey(renderingContext, GLFW_KEY_A) == GLFW_PRESS)
-            Forward -= Right * CameraMoveSpeed;
+            Position += Right * CameraMoveSpeed;
     }
 
     void Camera::UpdateRotation(float pitchDelta, float yawDelta)
     {
-        /* constrain pitch and yaw */
         Pitch += pitchDelta;
         Yaw += yawDelta;
 
-        if (Pitch < -89.0f)
-            Pitch = -89.0f;
-        if (Pitch > 89.0f)
-            Pitch = 89.0f;
+        /* constrain pitch and yaw */
+        //if (Pitch < -89.0f)
+        //    Pitch = -89.0f;
+        //if (Pitch > 89.0f)
+        //    Pitch = 89.0f;
 
         /* update the forward direction */
         glm::vec3 NewForward{
