@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
 
+//#include <iostream>
+
 namespace awesome {
 
     void Camera::Tick(double deltaTimeSec, GLFWwindow* renderingContext)
@@ -30,6 +32,7 @@ namespace awesome {
             Position -= Right * CameraMoveSpeed;
         if (glfwGetKey(renderingContext, GLFW_KEY_A) == GLFW_PRESS)
             Position += Right * CameraMoveSpeed;
+        //std::cout << Position.x << " " << Position.y  << " " << Position.z << std::endl;
     }
 
     void Camera::UpdateRotation(float pitchDelta, float yawDelta)
@@ -38,10 +41,10 @@ namespace awesome {
         Yaw += yawDelta;
 
         /* constrain pitch and yaw */
-        //if (Pitch < -89.0f)
-        //    Pitch = -89.0f;
-        //if (Pitch > 89.0f)
-        //    Pitch = 89.0f;
+        if (Pitch < -89.0f)
+            Pitch = -89.0f;
+        if (Pitch > 89.0f)
+            Pitch = 89.0f;
 
         /* update the forward direction */
         glm::vec3 NewForward{

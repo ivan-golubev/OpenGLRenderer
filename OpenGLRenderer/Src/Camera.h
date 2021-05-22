@@ -14,9 +14,9 @@ namespace awesome {
 	private:
 		void ProcessInput(double deltaTimeSec, GLFWwindow* renderingContext);		
 
-		const float CameraMoveSpeed = 0.1f; /* NDC/sec */	
+		const float CameraMoveSpeed = 0.05f; /* NDC/sec */	
 		
-		glm::vec3 Position{0.0f, 0.0f, 3.0f};
+		glm::vec3 Position{0.0f, 0.0f, 20.0f};
 		float Pitch{ 0.0f };
 		float Yaw{ -90.0f };
 

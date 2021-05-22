@@ -46,7 +46,7 @@ namespace awesome
 
         /* pass the texture */
         glBindTexture(GL_TEXTURE_2D, TextureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mesh.TextureWidth, mesh.TextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, mesh.Texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, mesh.TextureColorFormat, mesh.TextureWidth, mesh.TextureHeight, 0, mesh.TextureColorFormat, GL_UNSIGNED_BYTE, mesh.Texture);
         /* set the texture wrapping/filtering options */
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

@@ -58,6 +58,7 @@ namespace awesome
 		std::vector<Color> Colors{};
 		std::vector<TextureCoord> TextureCoords{};
 		unsigned char* Texture{ nullptr };
+		unsigned int TextureColorFormat{ 0 }; /* GL_RGB or GL_RGBA */
 		int TextureWidth{ 0 };
 		int TextureHeight{ 0 };
 

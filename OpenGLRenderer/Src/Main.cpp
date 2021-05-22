@@ -7,7 +7,7 @@ int main()
     Renderer* renderer{ Renderer::GetInstance()};
 
     {
-        Model model2("Models/cube.fbx", "Shaders/vertex_shader_textured.glsl", "Shaders/fragment_shader_textured.glsl");
+        Model model2("Models/King.fbx", "Shaders/vertex_shader_textured.glsl", "Shaders/fragment_shader_textured.glsl");
         renderer->SubmitModel(std::move(model2));
     }
 

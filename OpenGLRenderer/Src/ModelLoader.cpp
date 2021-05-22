@@ -8,7 +8,9 @@
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <assimp/postprocess.h> // model postprocessing flags
+
+#include <glad/glad.h> // color formats
 
 /* Forward declare a texture loading function from stbi, which is part of Assimp */
 extern "C" {
@@ -139,12 +141,15 @@ namespace awesome
 				std::string const moduleRelativePath{ "Models/" };
 				std::string const textureRelativePath{aiTexturePath.C_Str()};
 
-				//TODO: assert if texture cannot be found
-
 				/* the texture path is relative to the model location */
 				std::string const textureAbsPath{ std::filesystem::absolute(moduleRelativePath + textureRelativePath).generic_string() };
+				bool textureFileExists = std::filesystem::exists(textureAbsPath);
+				assert(textureFileExists && "Loading a texture from a file");
+				if (!textureFileExists)
+					return;
 				int nrChannels;
 				Texture = stbi_load(textureAbsPath.c_str(), &TextureWidth, &TextureHeight, &nrChannels, 0);
+				TextureColorFormat = nrChannels > 3 ? GL_RGBA : GL_RGB;
 			}
 		}
 	}
@@ -156,6 +161,7 @@ namespace awesome
 		Colors = std::move(other.Colors);
 		TextureCoords = std::move(other.TextureCoords);
 		Texture = other.Texture;
+		TextureColorFormat = other.TextureColorFormat;
 
 		memset(&other, 0, sizeof(Mesh));
 	}
