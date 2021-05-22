@@ -8,6 +8,7 @@
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 /* Forward declare a texture loading function from stbi, which is part of Assimp */
 extern "C" {
@@ -52,7 +53,11 @@ namespace awesome
 	{
 		std::string modelFileAbsPath{ std::filesystem::absolute(modelRelativePath).generic_string() };
 		Assimp::Importer importer;
-		aiScene const * scene = importer.ReadFile(modelFileAbsPath, 0);
+		aiScene const * scene = importer.ReadFile(modelFileAbsPath, 
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType
+		);
 		if (!scene) {
 			std::cout << "Failed to read the input model " << modelFileAbsPath << std::endl;
 			std::cout << importer.GetErrorString() << modelFileAbsPath << std::endl;
